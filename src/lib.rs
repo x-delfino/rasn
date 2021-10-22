@@ -2,6 +2,8 @@
 #![no_std]
 extern crate alloc;
 
+mod per;
+
 pub mod de;
 pub mod enc;
 pub mod types;
@@ -11,6 +13,8 @@ pub mod types;
 pub mod ber;
 pub mod cer;
 pub mod der;
+pub mod aper;
+pub mod uper;
 
 #[doc(inline)]
 pub use self::{

@@ -279,80 +279,84 @@ pub struct TransitedEncoding {
 pub struct TicketFlags(pub KerberosFlags);
 
 impl TicketFlags {
+    pub fn new() -> Self {
+        Self(KerberosFlags::from_slice(&[0u8; 4]))
+    }
+ 
     /// Reserved for future expansion of this field.
-    pub fn reserved() -> Self {
-        Self(KerberosFlags::from_element(0))
+    pub fn reserved(&mut self) {
+        self.0.set(0, true)
     }
 
     /// Tells the ticket-granting server that it is OK to issue a new TGT with a
     /// different network address based on the presented ticket.
-    pub fn forwardable() -> Self {
-        Self(KerberosFlags::from_element(1))
+    pub fn forwardable(&mut self) {
+        self.0.set(1, true)
     }
 
     /// Indicates that the ticket has either been forwarded or was issued based
     /// on authentication involving a forwarded TGT.
-    pub fn forwarded() -> Self {
-        Self(KerberosFlags::from_element(2))
+    pub fn forwarded(&mut self) {
+        self.0.set(2, true)
     }
 
     /// Identical to the [TicketFlags::forwardable] flag, except that it tells
     /// the ticket-granting server that only non-TGTs may be issued with
     /// different network addresses.
-    pub fn proxiable() -> Self {
-        Self(KerberosFlags::from_element(3))
+    pub fn proxiable(&mut self) {
+        self.0.set(3, true)
     }
 
     /// Indicates that a ticket is a proxy.
-    pub fn proxy() -> Self {
-        Self(KerberosFlags::from_element(4))
+    pub fn proxy(&mut self) {
+        self.0.set(4, true)
     }
 
     /// Tells the ticket-granting server that a post-dated ticket may be issued
     /// based on this TGT.
-    pub fn may_postdate() -> Self {
-        Self(KerberosFlags::from_element(0x8))
+    pub fn may_postdate(&mut self) {
+        self.0.set(5, true)
     }
 
     /// Indicates that this ticket has been postdated. The end-service can check
     /// the `auth_time` field to see when the original authentication occurred.
-    pub fn postdated() -> Self {
-        Self(KerberosFlags::from_element(0x10))
+    pub fn postdated(&mut self) {
+        self.0.set(6, true)
     }
 
     /// Indicates that a ticket is invalid, and it must be validated by the KDC
     /// before use. Application servers must reject tickets which have this
     /// flag set.
-    pub fn invalid() -> Self {
-        Self(KerberosFlags::from_element(0x20))
+    pub fn invalid(&mut self) {
+        self.0.set(7, true)
     }
 
     /// Indicates that a ticket can be used to obtain a replacement ticket that
     /// expires at a later date.
-    pub fn renewable() -> Self {
-        Self(KerberosFlags::from_element(0x40))
+    pub fn renewable(&mut self) {
+        self.0.set(8, true)
     }
 
     /// Indicates that this ticket was issued using the AS protocol, and not
     /// issued based on a TGT.
-    pub fn initial() -> Self {
-        Self(KerberosFlags::from_element(0x80))
+    pub fn initial(&mut self) {
+        self.0.set(9, true)
     }
 
     /// Indicates that during initial authentication, the client was
     /// authenticated by the KDC before a ticket was issued.  The strength of
     /// the pre-authentication method is not indicated, but is acceptable to
     /// the KDC.
-    pub fn pre_authent() -> Self {
-        Self(KerberosFlags::from_slice(&[0x1, 00]))
+    pub fn pre_authent(&mut self) {
+        self.0.set(10, true)
     }
 
     /// Indicates that the protocol employed for initial authentication required
     /// the use of hardware expected to be possessed solely by the named client.
     /// The hardware authentication method is selected by the KDC and the
     /// strength of the method is not indicated.
-    pub fn hw_authent() -> Self {
-        Self(KerberosFlags::from_slice(&[0x2, 00]))
+    pub fn hw_authent(&mut self) {
+        self.0.set(11, true)
     }
 
     /// Indicates that the KDC for the realm has checked the transited field
@@ -363,8 +367,8 @@ impl TicketFlags {
     /// validation of the transited field, relying on the validation performed
     /// by the KDC.  At its option the application server MAY still apply its
     /// own validation based on a separate policy for acceptance.
-    pub fn transited_policy_checked() -> Self {
-        Self(KerberosFlags::from_slice(&[0x4, 00]))
+    pub fn transited_policy_checked(&mut self) {
+        self.0.set(12, true)
     }
 
     /// Indicates that the server (not the client) specified in the ticket has
@@ -375,8 +379,8 @@ impl TicketFlags {
     /// flag. When setting this flag, an administrator should consider the
     /// security and placement of the server on which the service will run, as
     /// well as whether the service requires the use of delegated credentials.
-    pub fn ok_as_delegate() -> Self {
-        Self(KerberosFlags::from_slice(&[0x80, 0]))
+    pub fn ok_as_delegate(&mut self) {
+        self.0.set(13, true)
     }
 }
 
@@ -489,45 +493,49 @@ pub struct KdcReqBody {
 pub struct KdcOptions(pub KerberosFlags);
 
 impl KdcOptions {
+    pub fn new() -> Self {
+        Self(KerberosFlags::from_slice(&[0u8; 4]))
+    }
+ 
     /// Reserved for future expansion of this field.
-    pub fn reserved() -> Self {
-        Self(KerberosFlags::from_element(0))
+    pub fn reserved(&mut self) {
+        self.0.set(0, true)
     }
 
     /// Indicates that the ticket to be issued is to have its forwardable flag
     /// set. It may only be set on the initial request, or in a subsequent
     /// request if the TGT on which it is based is also forwardable.
-    pub fn forwardable() -> Self {
-        Self(KerberosFlags::from_element(1))
+    pub fn forwardable(&mut self) {
+        self.0.set(1, true)
     }
 
     /// Indicates that this is a request for forwarding. The address(es) of the
     /// host from which the resulting ticket is to be valid are included in the
     /// addresses field of the request.
-    pub fn forwarded() -> Self {
-        Self(KerberosFlags::from_element(2))
+      pub fn forwarded(&mut self) {
+        self.0.set(2, true)
     }
 
     /// Indicates that the ticket to be issued is to have its proxiable flag
     /// set. It may only be set on the initial request, or a subsequent request
     /// if the TGT on which it is based is also proxiable.
-    pub fn proxiable() -> Self {
-        Self(KerberosFlags::from_element(4))
+    pub fn proxiable(&mut self) {
+        self.0.set(3, true)
     }
 
     /// Indicates that this is a request for a proxy. This option will only be
     /// honored if the TGT in the request has its PROXIABLE bit set. The
     /// address(es) of the host from which the resulting ticket is to be valid
     /// are included in the addresses field of the request.
-    pub fn proxy() -> Self {
-        Self(KerberosFlags::from_element(0x8))
+    pub fn proxy(&mut self) {
+        self.0.set(4, true)
     }
 
     /// Indicates that the ticket to be issued is to have its MAY-POSTDATE flag
     /// set. It may only be set on the initial request, or in a subsequent
     /// request if the TGT on which it is based also has its MAY-POSTDATE flag set.
-    pub fn allow_postdate() -> Self {
-        Self(KerberosFlags::from_element(0x10))
+    pub fn allow_postdate(&mut self) {
+        self.0.set(5, true)
     }
 
     /// Indicates that this is a request for a postdated ticket. This option
@@ -535,8 +543,8 @@ impl KdcOptions {
     /// [TicketFlags::may_postdate] flag set.  The resulting ticket will also
     /// have its INVALID flag set, and that flag may be reset by a subsequent
     /// request to the KDC after the starttime in the ticket has been reached.
-    pub fn postdated() -> Self {
-        Self(KerberosFlags::from_element(0x20))
+    pub fn postdated(&mut self) {
+        self.0.set(6, true)
     }
 
     /// Indicates that the ticket to be issued is to have its RENEWABLE flag set.
@@ -544,12 +552,12 @@ impl KdcOptions {
     /// request is based is also renewable. If this option is requested, then
     /// the `rtime` field in the request contains the desired absolute
     /// expiration time for the ticket.
-    pub fn renewable() -> Self {
-        Self(KerberosFlags::from_element(0x80))
+    pub fn renewable(&mut self) {
+        self.0.set(8, true)
     }
 
-    pub fn opt_hardware_auth() -> Self {
-        Self(KerberosFlags::from_slice(&[0x4, 00]))
+    pub fn opt_hardware_auth(&mut self) {
+        self.0.set(11, true)
     }
 
     /// Indicates checking of the transited field is disabled.  Tickets issued
@@ -558,8 +566,8 @@ impl KdcOptions {
     /// the application server that the transited field must be checked locally.
     /// KDCs are encouraged but not required to honor the
     /// [Self::disable_transited_check] option.
-    pub fn disable_transited_check() -> Self {
-        Self(KerberosFlags::from_slice(&[0x4, 00, 00, 00]))
+    pub fn disable_transited_check(&mut self) {
+        self.0.set(26, true)
     }
 
     /// Indicates that a renewable ticket will be acceptable if a ticket with
@@ -568,14 +576,14 @@ impl KdcOptions {
     /// requested endtime.  The value of the renew-till field may still be
     /// limited by local limits, or limits selected by the individual principal
     /// or server.
-    pub fn renewable_ok() -> Self {
-        Self(KerberosFlags::from_slice(&[0x8, 00, 00, 00]))
+    pub fn renewable_ok(&mut self) {
+        self.0.set(27, true)
     }
 
     /// Indicates that the ticket for the end server is to be encrypted in the
     /// session key from the additional TGT provided.
-    pub fn enc_tkt_in_skey() -> Self {
-        Self(KerberosFlags::from_slice(&[0x10, 00, 00, 00]))
+    pub fn enc_tkt_in_skey(&mut self) {
+        self.0.set(28, true)
     }
 
     /// Indicates that the present request is for a renewal. The ticket provided
@@ -584,8 +592,8 @@ impl KdcOptions {
     /// [TicketFlags::renewable] flag set and if the time in its `renew_till`
     /// field has not passed. The ticket to be renewed is passed in the `padata`
     /// field as part of the authentication header.
-    pub fn renew() -> Self {
-        Self(KerberosFlags::from_slice(&[0x40, 00, 00, 00]))
+    pub fn renew(&mut self) {
+        self.0.set(30, true)
     }
 
     /// Indicates that the request is to validate a postdated ticket. It will
@@ -595,8 +603,8 @@ impl KdcOptions {
     /// presented for validation is encrypted in the key of the server for which
     /// it is valid and is passed in the `padata` field as part of the
     /// authentication header.
-    pub fn validate() -> Self {
-        Self(KerberosFlags::from_slice(&[0x80, 00, 00, 00]))
+    pub fn validate(&mut self) {
+        self.0.set(31, true)
     }
 }
 
@@ -790,22 +798,26 @@ pub struct ApReq {
 pub struct ApOptions(pub KerberosFlags);
 
 impl ApOptions {
+    pub fn new() -> Self {
+        Self(KerberosFlags::from_slice(&[0u8; 4]))
+    }
+ 
     /// Reserved for future expansion.
-    pub fn reserved() -> Self {
-        Self(KerberosFlags::from_element(0))
+    pub fn reserved(&mut self) {
+        self.0.set(0, true)
     }
 
     /// Indicates that the ticket the client is presenting to a server is
     /// encrypted in the session key from the server's TGT.  When this option is
     /// not specified, the ticket is encrypted in the server's secret key.
-    pub fn use_session_key() -> Self {
-        Self(KerberosFlags::from_element(1))
+    pub fn use_session_key(&mut self) {
+        self.0.set(1, true)
     }
 
     /// Indicates that the client requires mutual authentication, and that it
     /// must respond with a [ApRep] message.
-    pub fn mutual_required() -> Self {
-        Self(KerberosFlags::from_element(2))
+    pub fn mutual_required(&mut self) {
+        self.0.set(2, true)
     }
 }
 
